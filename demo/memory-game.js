@@ -61,8 +61,8 @@ function displayScore() {
   let bestScore = loScore !== null ? loScore : "no wins";
 
   scoreBoard.innerHTML = `
-  Current guess count: ${guessCount} <br>
-  Your Best Score: ${bestScore}`;
+  Current Score: <span class="score">${guessCount}</span>
+  All Time Low: <span class="score">${bestScore}</span>`;
 }
 
 /** Flip a card face-up. */
@@ -99,7 +99,6 @@ function handleCardClick(evt) {
       firstPick = null;
       matches++;
       guessCount++;
-      console.log(matches);
 
       if (matches >= scoreToWin) {
 
@@ -141,9 +140,10 @@ function handleStartClick(evt) {
 
   scoreboard.classList.add("move");
   scoreboard.innerHTML = `
-    <h1>Memory Game!</h1>
-    <hr>
-    <p id="stats"></p>`;
+  <div class="landing-page" id="game-board">
+    <h2>Generic Memory Game!</h2>
+    <p id="stats"></p>
+    </div>`;
     displayScore();
 }
 
@@ -152,43 +152,45 @@ function win() {
   const winMessage = winMsg(guessCount);
   const scoreMessage = checkBestScore(guessCount);
 
+  console.log();
+
   winBanner.innerHTML = `
-  <h1>${winMessage}</h1>
+  ${winMessage}
   <p>${scoreMessage}</P>
-  <button id="play-again" onClick="window.location.reload()">Play Again</button>
+  <button id="play-again" onClick="window.location.reload()"git>Play Again</button>
   `
 
   winBanner.classList.add("show");
 }
 
 function winMsg(score) {
-  if (score < 6) {
-    return "Perfection!";
+  if (score <= 6) {
+    return "<h1>PERFECT!</h1>";
   } else if (score <= 10) {
-    return "You Win!";
+    return "<h1>YOU WIN!</h1>";
   } else if (score <= 15) {
-    return "You win, I guess."
+    return "<h1>You win, I guess.</h1>"
   } else if (score > 15) {
-    return "That was pretty good, for a goldfish."
+    return "<h3>That was pretty good, for a goldfish.</h3>"
   }
 }
 
 function checkBestScore(score) {
-  let currentBestScore = Number(localStorage.getItem("bestScore"));
+  let currentBestScore = localStorage.getItem("bestScore");
 
   if (currentBestScore === null) {
     localStorage.setItem("bestScore", score);
-    return `your new best score is ${score}!`;
+    return `your new all time low is ${score}!`;
 
   } else if (currentBestScore > score) {
     localStorage.setItem("bestScore", score);
-    return `your new best score is ${score}!`;
+    return `your new all time low is ${score}!`;
 
   } else if (currentBestScore < score) {
-    return `you fail to beat your best score of ${score}`;
+    return `but you fail to beat your all time low of ${currentBestScore}`;
 
   } else {
-    return "you've tied your best score";
+    return "you've tied your all time low!";
   }
 
 }
