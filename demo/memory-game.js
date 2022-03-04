@@ -11,7 +11,7 @@ const COLORS = [
 let firstPick = null;
 let guessCount = 0;
 let matches = 0;
-const scoreToWin = COLORS.length/2;
+const scoreToWin = COLORS.length / 2;
 
 const colors = shuffle(COLORS);
 
@@ -49,20 +49,10 @@ function createCards(colors) {
   let cardHTML = '';
   for (let color of colors) {
     cardHTML += `
-    <div class=${color + i} id="down"><h1>\{R\}</h1></div>`;
+    <button class=${color + i} id="down"><h1>\{R\}</h1></button>`;
     i++;
   }
   gameBoard.innerHTML = cardHTML;
-}
-
-function displayScore() {
-  let scoreBoard = document.getElementById("stats");
-  let loScore = localStorage.getItem("bestScore");
-  let bestScore = loScore !== null ? loScore : "no wins";
-
-  scoreBoard.innerHTML = `
-  Current Score: <span class="score">${guessCount}</span>
-  All Time Low: <span class="score">${bestScore}</span>`;
 }
 
 /** Flip a card face-up. */
@@ -78,11 +68,18 @@ function unFlipCard(card) {
 }
 
 /** Handle clicking on a card: this could be first-card or second-card. */
+/* functions to handle clicks */
+
+  //cick delay
+
+
 
 function handleCardClick(evt) {
-
   const card = evt.target;
   const color = card.className.slice(0, card.className.length - 1);
+
+        //prevents rapid guessing
+
 
 
   if (COLORS.includes(color)) {
@@ -109,31 +106,20 @@ function handleCardClick(evt) {
     } else if (firstPick.className !== color) {
       flipCard(card);
       setTimeout(unFlipCard, 1000, card);
-      setTimeout(unFlipCard, 1020, firstPick);
+      setTimeout(unFlipCard, 1010, firstPick);
       firstPick = null;
       guessCount++;
 
     } else {
       setTimeout(unFlipCard, 1000, firstPick);
     }
-
   }
+  //click delay
+  document.querySelectorAll("#down").forEach( item => item.disabled=true);
+  setTimeout('document.querySelectorAll("#down").forEach( item => item.disabled=false)', 900);
   displayScore();
 }
 
-function hammingDistanceOne(string1, string2) {
-  if (string1.length !== string2.length) return false;
-  let count = 0;
-  const word1 = string1.toLowerCase();
-  const word2 = string2.toLowerCase();
-
-  for (let i = 0; i < string1.length; i++) {
-    if (word1[i] !== word2[i]) {
-      count++;
-    }
-  }
-  return count === 1;
-}
 
 function handleStartClick(evt) {
   const scoreboard = document.getElementById("scoreboard");
@@ -144,9 +130,17 @@ function handleStartClick(evt) {
     <h2>Generic Memory Game!</h2>
     <p id="stats"></p>
     </div>`;
-    displayScore();
+  displayScore();
 }
 
+function handlePlayAgainClick() {
+  window.location.reload();
+  return false;
+}
+
+
+
+/*These functions handle winning conditions & messages.*/
 function win() {
   const winBanner = document.getElementById("winBanner");
   const winMessage = winMsg(guessCount);
@@ -158,9 +152,19 @@ function win() {
   ${winMessage}
   <p>${scoreMessage}</P>
   <button id="play-again" onClick="window.location.reload()"git>Play Again</button>
-  `
+  `;
 
   winBanner.classList.add("show");
+}
+
+function displayScore() {
+  let scoreBoard = document.getElementById("stats");
+  let loScore = localStorage.getItem("bestScore");
+  let bestScore = loScore !== null ? loScore : "no wins";
+
+  scoreBoard.innerHTML = `
+  Current Score: <span class="score">${guessCount}</span>
+  All Time Low: <span class="score">${bestScore}</span>`;
 }
 
 function winMsg(score) {
@@ -169,9 +173,9 @@ function winMsg(score) {
   } else if (score <= 10) {
     return "<h1>YOU WIN!</h1>";
   } else if (score <= 15) {
-    return "<h1>You win, I guess.</h1>"
+    return "<h1>You win, I guess.</h1>";
   } else if (score > 15) {
-    return "<h3>That was pretty good, for a goldfish.</h3>"
+    return "<h3>That was pretty good, for a goldfish.</h3>";
   }
 }
 
@@ -195,9 +199,18 @@ function checkBestScore(score) {
 
 }
 
-function handlePlayAgainClick() {
-  window.location.reload();
-  return false
+function hammingDistanceOne(string1, string2) {
+  if (string1.length !== string2.length) return false;
+  let count = 0;
+  const word1 = string1.toLowerCase();
+  const word2 = string2.toLowerCase();
+
+  for (let i = 0; i < string1.length; i++) {
+    if (word1[i] !== word2[i]) {
+      count++;
+    }
+  }
+  return count === 1;
 }
 
 document.getElementById("start-btn").addEventListener("click", handleStartClick);
